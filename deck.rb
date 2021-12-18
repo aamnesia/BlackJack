@@ -7,18 +7,17 @@ class Deck
   end
 
   def create_deck
-    values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+    rank = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
     suits = ['♦', '♠', '♥ ', '♣']
     @cards = []
-    values.each do |value|
+    values.each do |rank|
       suits.each do |suit|
-        @cards << value + suit
+        @cards << Card.new(rank, suit)
       end
     end
   end
 
-  def draw(user, number_of_cards)
-    @cards.pop(number_of_cards)
+  def draw(hand, number_of_cards)
+    hand.cards = @cards.pop(number_of_cards)
   end
-
 end

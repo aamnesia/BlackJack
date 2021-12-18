@@ -1,18 +1,16 @@
 class User
+  attr_reader :name :own_bank
 
-  def initialize
-    @name
+  def initialize(name = "Dealer")
+    @name = name
     @own_bank = 100
   end
 
-  def make_a_bet(bank)
-    bank += 10
-    @own_bank -= 10
+  def make_a_bet(bet)
+    @own_bank -= bet
   end
 
-  def take_money(bank)
-    @own_bank += bank
-    bank = 0
+  def take_money(bet)
+    @own_bank += bet
   end
-
 end
