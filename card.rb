@@ -7,7 +7,9 @@ class Card
     @value = card_value
   end
 
-  private
+  def show_card
+    @rank + @suit
+  end
 
   def card_value
     if ['J', 'Q', 'K'].include? @rank

@@ -23,14 +23,16 @@ loop do
 
   player.make_a_bet(10)
   dealer.make_a_bet(10)
+  puts LINE
 
-  unless (players_hand.cards.size == 3) && (dealers_hand.cards.size == 3)
-    main_action(dealer, player)
-  else
-    open_points_cards(dealers_hand)
-  end
 
-  total(dealer, player)
+  main_action(dealer, player, players_hand, dealers_hand, deck)
+  open_points_cards(dealers_hand, players_hand)
+
+  puts LINE
+  total(dealer, player, dealers_hand, players_hand)
   print "Хотите играть ещё? [д/н] "
-  break if gets.chomp == "н"
+  choice = gets.chomp
+  puts "Ваш выигрыш составил #{player.own_bank - 100}$" if choice == "н"
+  break if choice == "н"
 end

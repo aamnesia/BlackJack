@@ -1,11 +1,10 @@
 class Dealer < User
-  super
-
   def actions(dealers_hand, deck)
     if dealers_hand.points >= 17
-      puts "Player's turn"
-    else
+      puts "Пас"
+    elsif dealers_hand.cards.size != 3
       deck.draw(dealers_hand, 1)
+      puts "Диллер взял карту"
     end
   end
 end

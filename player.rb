@@ -9,15 +9,18 @@ class Player < User
     gets.chomp
   end
 
-  def actions(choice, users_hand, dealers_hand)
+  def actions(choice, players_hand, dealers_hand, deck)
     case choice
-    when 1 then "Dealer's turn"
+    when 1 then puts "Пас"
     when 2
-      deck.draw(users_hand, 1)
-      show_points_cards {dealers_hand.secret_cards}
-    when 3 then
-      open_points_cards(dealers_hand)
-      break
+      if players_hand.cards.size != 3
+        deck.draw(players_hand, 1)
+        show_points_cards(players_hand) {dealers_hand.secret_cards}
+      else
+        puts "Карты уже взяты"
+      end
+    #when 3 then open_points_cards(dealers_hand, players_hand)
+    #карты откроются после выхода из цикла main_action
     end
   end
 end
