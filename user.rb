@@ -4,6 +4,7 @@ class User
   def initialize(name = "Dealer")
     @name = name
     @own_bank = 100
+    @hand = Hand.new
   end
 
   def make_a_bet(bet)
