@@ -1,26 +1,14 @@
 class Player < User
-  def initialize(name = get_name)
-    @name = name
-    super
-  end
-
-  def get_name
-    print "Ваше имя: "
-    gets.chomp
-  end
-
-  def actions(choice, players_hand, dealers_hand, deck)
+  def actions(choice, dealer, deck, interface)
     case choice
-    when 1 then puts "Пас"
+    when 1 then interface.pass
     when 2
-      if players_hand.cards.size != 3
-        deck.draw(players_hand, 1)
-        show_points_cards(players_hand) {dealers_hand.secret_cards}
+      if self.hand.cards.size != 3
+        deck.draw(self.hand, 1)
+        interface.show_points_cards(self) {interface.secret_cards(dealer)}
       else
-        puts "Карты уже взяты"
+        interface.full_hands
       end
-    #when 3 then open_points_cards(dealers_hand, players_hand)
-    #карты откроются после выхода из цикла main_action
     end
   end
 end

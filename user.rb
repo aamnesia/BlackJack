@@ -1,5 +1,6 @@
 class User
   attr_reader :name, :own_bank
+  attr_accessor :hand
 
   def initialize(name = "Dealer")
     @name = name

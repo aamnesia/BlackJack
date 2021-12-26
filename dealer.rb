@@ -1,10 +1,10 @@
 class Dealer < User
-  def actions(dealers_hand, deck)
-    if dealers_hand.points >= 17
-      puts "Пас"
-    elsif dealers_hand.cards.size != 3
-      deck.draw(dealers_hand, 1)
-      puts "Диллер взял карту"
+  def actions(deck, interface)
+    if self.hand.points >= 17
+      interface.pass
+    elsif self.hand.cards.size != 3
+      deck.draw(self.hand, 1)
+      interface.took_card
     end
   end
 end

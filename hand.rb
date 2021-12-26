@@ -13,14 +13,4 @@ class Hand
     end
     @score
   end
-
-  def secret_cards
-    @cards.length.times { print "**  " }
-    print "\n"
-  end
-
-  def open_cards
-    @cards.each { |card| print "#{card.show_card} "}
-    print "\n"
-  end
 end
