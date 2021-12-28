@@ -1,12 +1,10 @@
 class Game
-  attr_reader :dealer, :player#, :interface
+  attr_reader :dealer, :player
   attr_accessor :player_hand, :dealer_hand
 
   def initialize
     @dealer = User.new
     @player = User.new
-    #@turn = {1: players_turn, 2: dealers_turn}
-    #@interface = Interface.new
   end
 
   USERS_CHOICE_MENU = "
@@ -21,13 +19,13 @@ class Game
   def play_game
     set_playername
     while want_to_play? do
-      puts "Игра началась! #{@player.name} VS #{@dealer.name}"
+      greeting
       start_game
       show_hands
       main_action
       show_hands(show_all: true)
       total
-      puts "Game over"
+      ending
     end
   end
 
@@ -38,6 +36,14 @@ class Game
   def ask_name
     print "Ваше имя: "
     gets.chomp
+  end
+
+  def greeting
+    puts "Игра началась! #{@player.name} VS #{@dealer.name}"
+  end
+
+  def ending
+    puts "Game over"
   end
 
   def want_to_play?
