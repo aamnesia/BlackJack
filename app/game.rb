@@ -5,61 +5,28 @@ class Game
   def initialize
     @dealer = User.new
     @player = User.new
+    @interface = Interface.new
   end
-
-  USERS_CHOICE_MENU = "
-    Выберите действие
-  1 - Пас
-  2 - Взять карту
-  3 - Открыть карты
-  >>> "
-
-  LINE = "=" * 20
 
   def play_game
     set_playername
-    while want_to_play? do
-      greeting
+    while @interface.want_to_play?(@player) do
+      @interface.greeting(@player, @dealer)
       start_game
-      show_hands
+      @interface.show_hands(@player_hand, @dealer_hand)
       main_action
-      show_hands(show_all: true)
+      @interface.show_hands(@player_hand, @dealer_hand, show_all: true)
       total
-      ending
+      @interface.ending
     end
   end
 
   def set_playername
-    @player.name = ask_name
-  end
-
-  def ask_name
-    print "Ваше имя: "
-    gets.chomp
-  end
-
-  def greeting
-    puts "Игра началась! #{@player.name} VS #{@dealer.name}"
-  end
-
-  def ending
-    puts "Game over"
-  end
-
-  def want_to_play?
-    print "Want to play? [y/n] "
-    choice = gets.chomp
-    if choice == "n"
-      puts "Ваш выигрыш составил #{@player.own_bank - 100}$"
-      false
-    elsif choice == "y"
-      true
-    end
+    @player.name = @interface.ask_name
   end
 
   def start_game
-    puts "Мешаем карты, раздаем, делаем ставки.."
-    sleep(2)
+    @interface.start_game_message
     @deck = Deck.new
     @player_hand = Hand.new
     @dealer_hand = Hand.new
@@ -69,109 +36,54 @@ class Game
     @dealer.make_a_bet(10)
   end
 
-  def open_cards(hand)
-    hand.cards.each { |card| print "#{card.show_card} "}
-    print "\n"
-  end
-
-  def secret_cards
-    @dealer_hand.cards.length.times { print "**  " }
-    print "\n"
-  end
-
-  def show_hands(show_all: false)
-    puts "\nВаши карты: "
-    open_cards(@player_hand)
-    puts "Ваши очки: #{@player_hand.points}"
-    puts "\nКарты диллера: "
-    if show_all
-      open_cards(@dealer_hand)
-      puts "Очки дилера: #{@dealer_hand.points}"
-    else
-      secret_cards
-    end
-    puts LINE
-  end
-
-  def pass
-    puts "Пас"
-    puts LINE
-  end
-
-  def full_hands
-    puts "Карты уже взяты"
-  end
-
-  def took_card(user)
-    puts "#{user.name} взял карту"
-  end
-
   def players_turn(choice)
     case choice
-    when 1 then pass
+    when 1 then @interface.pass
     when 2
       if @player_hand.cards.size != 3
         @deck.draw(@player_hand, 1)
-        took_card(@player)
-        show_hands
+        @interface.took_card(@player)
+        @interface.show_hands(@player_hand, @dealer_hand)
       else
-        full_hands
+        @interface.full_hands
       end
     end
   end
 
   def dealers_turn
     if @dealer_hand.points >= 17
-      pass
+      @interface.pass
     elsif @dealer_hand.cards.size != 3
       @deck.draw(@dealer_hand, 1)
-      took_card(@dealer)
+      @interface.took_card(@dealer)
     end
   end
 
   def main_action
     loop do
-      choice = users_choice
-      return puts "Открываем карты" if choice == 3
+      choice = @interface.users_choice
+      return @interface.opening_cards if choice == 3
       players_turn(choice)
       sleep(2)
-      return puts "Открываем карты" if (@player_hand.cards.size == 3) \
+      return @interface.opening_cards if (@player_hand.cards.size == 3) \
       && (@dealer_hand.cards.size == 3)
       dealers_turn
     end
   end
 
-  def users_choice
-    print USERS_CHOICE_MENU
-    gets.chomp.to_i
-  end
-
   def total
-    puts "Подводим итоги.."
-    sleep(2)
+    @interface.recalculating
     if (@dealer_hand.points > @player_hand.points) && @dealer_hand.points <= 21\
     || (@player_hand.points > 21)
-      dealer_won
+      @interface.dealer_won
+      @dealer.take_money(20)
     elsif @dealer_hand.points == @player_hand.points
-      dead_heat
+      @interface.dead_heat
+      @dealer.take_money(10)
+      @player.take_money(10)
     else
-      player_won
+      @interface.player_won(@player)
+      @player.take_money(20)
     end
-  end
-
-  def dealer_won
-    puts "Вы проиграли 10 долларов :("
-    @dealer.take_money(20)
-  end
-
-  def dead_heat
-    puts "Ничья"
-    @dealer.take_money(10)
-    @player.take_money(10)
-  end
-
-  def player_won
-    puts "#{@player.name}, you won 20$!"
-    @player.take_money(20)
   end
 end
