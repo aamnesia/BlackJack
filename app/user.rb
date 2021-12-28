@@ -1,11 +1,10 @@
 class User
-  attr_reader :name, :own_bank
-  attr_accessor :hand
+  attr_reader :own_bank
+  attr_accessor :name
 
   def initialize(name = "Dealer")
     @name = name
     @own_bank = 100
-    @hand = Hand.new
   end
 
   def make_a_bet(bet)
